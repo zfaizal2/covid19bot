@@ -19,12 +19,13 @@ app.use(bodyParser.urlencoded({
  
 app.use(bodyParser.json()); 
 
+app.get('/', (req, res) => res.send('Hello World!'))
+
 
 app.listen(process.env.PORT || 3000, function () { 
     console.log("SERVER STARTED PORT: 3000"); 
 });
 
-app.get('/', (req, res) => res.send('Hello World!'))
 
 
 // request.post('https://api.covid19api.com/webhook', {
@@ -41,14 +42,28 @@ app.get('/', (req, res) => res.send('Hello World!'))
 // })
 
 app.post("/hook", (req, res) => {
-    console.log("hello")
+    console.log("hooks")
     //console.log(req.body.json) // Call your action on the request here
-    const sum = req.body['URL']
-    console.log(sum)
-    tweetSummary(sum)
+    const site = req.body['URL']
+    console.log(site)
+    tweetSummary(site)
     res.send({"result":"success"})
     res.status(200).end() // Responding is important
 })
+
+app.post("/replies", (req, res) => {
+    console.log("replies")
+    //console.log(req.body.json) // Call your action on the request here
+    //const sum = req.body['URL']
+    //console.log(sum)
+    //tweetSummary(sum)
+    res.send({"result":"success"})
+    res.status(200).end() // Responding is important
+})
+
+function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}
 
 function tweetSummary(url) {
     console.log('hey!')
@@ -61,7 +76,10 @@ function tweetSummary(url) {
         for (var i = 0; i < (body["Countries"]).length; i++) {
             sum += body["Countries"][i]["NewConfirmed"];
         }
-
+        var num = formatNumber(sum);
+        var tweet = `In the last 24 hours, there have been ${num} new confirmed cases of COVID-19.`;
+        console.log(tweet);
+        T.post('statuses/update', {status: tweet});
         console.log(sum);
     });
 }
