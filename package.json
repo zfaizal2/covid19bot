@@ -4,7 +4,8 @@
   "description": "COVID-19 Updates Twitter Bot ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "author": "Zayyan Faizal",
   "license": "ISC",

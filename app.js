@@ -10,6 +10,9 @@ var express = require ('express');
 var app = express();
 const port = 3000;
 
+var T = new Twitter(config);
+
+
 app.use(bodyParser.urlencoded({ 
      extended: true 
 }));
@@ -17,7 +20,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json()); 
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(process.env.PORT || 3000, function () { 
+    console.log("SERVER STARTED PORT: 3000"); 
+});
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -56,6 +61,7 @@ function tweetSummary(url) {
         for (var i = 0; i < (body["Countries"]).length; i++) {
             sum += body["Countries"][i]["NewConfirmed"];
         }
+
         console.log(sum);
     });
 }
@@ -63,7 +69,6 @@ function tweetSummary(url) {
 
 
 
-var T = new Twitter(config);
 
 // Set up your search parameters
 var params = {
