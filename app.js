@@ -1,5 +1,6 @@
 // app.js
-var Twitter = require('twitter');
+
+// the server shit
 var config = require('./config.js');
 const bodyParser = require("body-parser")
 
@@ -10,8 +11,10 @@ var express = require ('express');
 var app = express();
 const port = 3000;
 
-var T = new Twitter(config);
 
+let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+let workQueue = new Queue('work', REDIS_URL);
 
 
 app.use(bodyParser.urlencoded({ 
@@ -45,6 +48,7 @@ app.listen(process.env.PORT || 3000, function () {
 app.post("/hook", (req, res) => {
     console.log("hooks")
     //console.log(req.body.json) // Call your action on the request here
+    let job = await workQueue.add();
     const site = req.body['URL']
     console.log(site)
     tweetSummary(site)
@@ -53,6 +57,7 @@ app.post("/hook", (req, res) => {
 })
 
 app.post("/replies", (req, res) => {
+    let job = await workQueue.add();
     console.log("replies")
     //console.log(req.body.json) // Call your action on the request here
     //const sum = req.body['URL']
@@ -62,28 +67,28 @@ app.post("/replies", (req, res) => {
     res.status(200).end() // Responding is important
 })
 
-function formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
+// function formatNumber(num) {
+//     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+// }
 
-function tweetSummary(url) {
-    console.log('hey!')
-    request(url, { json: true }, (err, res, body) => {
+// function tweetSummary(url) {
+//     console.log('hey!')
+//     request(url, { json: true }, (err, res, body) => {
 
-        if (err) { 
-            return console.log(err); 
-        }
-        var sum = 0;
-        for (var i = 0; i < (body["Countries"]).length; i++) {
-            sum += body["Countries"][i]["NewConfirmed"];
-        }
-        var num = formatNumber(sum);
-        var tweet = `In the last 24 hours, there have been ${num} new confirmed cases of COVID-19.`;
-        console.log(tweet);
-        T.post('statuses/update', {status: tweet});
-        console.log(sum);
-    });
-}
+//         if (err) { 
+//             return console.log(err); 
+//         }
+//         var sum = 0;
+//         for (var i = 0; i < (body["Countries"]).length; i++) {
+//             sum += body["Countries"][i]["NewConfirmed"];
+//         }
+//         var num = formatNumber(sum);
+//         var tweet = `In the last 24 hours, there have been ${num} new confirmed cases of COVID-19.`;
+//         console.log(tweet);
+//         T.post('statuses/update', {status: tweet});
+//         console.log(sum);
+//     });
+// }
 
 
 
