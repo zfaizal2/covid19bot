@@ -63,9 +63,9 @@ function renderJob(job) {
 }
 
 // Attach click handlers and kick off background processes
-window.onload = function() {
-  document.querySelector("#add-job").addEventListener("click", addJob);
-  document.querySelector("#clear").addEventListener("click", clear);
+// window.onload = function() {
+//   document.querySelector("#add-job").addEventListener("click", addJob);
+//   document.querySelector("#clear").addEventListener("click", clear);
 
-  setInterval(updateJobs, 200);
-};
+//   setInterval(updateJobs, 200);
+// };
