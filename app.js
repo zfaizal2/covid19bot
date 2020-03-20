@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({
  
 app.use(bodyParser.json()); 
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/hook', (req, res) => res.sendFile('index.html', { root: __dirname }));
 
 
 
