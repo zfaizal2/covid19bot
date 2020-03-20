@@ -10,7 +10,9 @@
   "author": "Zayyan Faizal",
   "license": "ISC",
   "dependencies": {
+    "bull": "^3.13.0",
     "express": "^4.17.1",
+    "throng": "^4.0.0",
     "twitter": "^1.7.1",
     "twitter-autohook": "^1.5.0"
   }
