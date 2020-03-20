@@ -160,16 +160,24 @@ function formatNumber(num) {
 function tweetSummary(url) {
     console.log('hey!')
     request(url, { json: true }, (err, res, body) => {
-
+        if(res.statusCode >= 400) {
+            return;
+        }
         if (err) { 
-            return console.log(err); 
+            return console.log("error"); 
         }
         var sum = 0;
+        var recovered =0;
         for (var i = 0; i < (body["Countries"]).length; i++) {
             sum += body["Countries"][i]["NewConfirmed"];
         }
+        for (var i = 0; i < (body["Countries"]).length; i++) {
+            recovered += body["Countries"][i]["NewRecovered"];
+        }
+
         var num = formatNumber(sum);
-        var tweet = `In the last 24 hours, there have been ${num} new confirmed cases of COVID-19.`;
+        var recover = formatNumber(recovered);
+        var tweet = `In the last 24 hours, there have been ${num} new confirmed cases of COVID-19 and ${recover} new recovered patients.`;
         console.log(tweet);
         T.post('statuses/update', {status: tweet});
         console.log(sum);
