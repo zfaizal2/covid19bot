@@ -37,7 +37,7 @@ let workQueue = new Queue('work', REDIS_URL);
 
 
 app.use(bodyParser.urlencoded({ 
-     extended: true 
+     extended: false 
 }));
  
 app.use(bodyParser.json()); 
@@ -66,7 +66,7 @@ app.post("/hook", (req, res) => {
     console.log("hooks")
     //console.log(req.body.json) // Call your action on the request here
     let job = workQueue.add();
-    const site = req.body['URL']
+    const site = req.body
     console.log(site)
     tweetSummary(site)
     res.send({"result":"success"})
@@ -157,15 +157,11 @@ function formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
-function tweetSummary(url) {
+function tweetSummary(body) {
     console.log('hey!')
-    request(url, { json: true }, (err, res, body) => {
-        if(res.statusCode >= 400) {
-            return;
-        }
-        if (err) { 
-            return console.log("error"); 
-        }
+    //request(url, { json: true }, (err, res, body) => {
+        
+        
         var sum = 0;
         var recovered =0;
         for (var i = 0; i < (body["Countries"]).length; i++) {
@@ -181,6 +177,6 @@ function tweetSummary(url) {
         console.log(tweet);
         T.post('statuses/update', {status: tweet});
         console.log(sum);
-    });
+    //});
 }
 
